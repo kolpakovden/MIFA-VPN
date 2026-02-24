@@ -1,0 +1,5 @@
+# Личные данные
+config/config.json
+*.log
+*.tmp
+*.pid
