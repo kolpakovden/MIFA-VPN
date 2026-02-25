@@ -1,5 +1,6 @@
-# Личные данные
-config/config.json
+.env
 *.log
 *.tmp
-*.pid
+__pycache__/
+/var/lib/loki/
+/var/log/promtail/
