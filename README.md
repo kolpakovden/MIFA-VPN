@@ -142,39 +142,206 @@ sudo systemctl enable --now xray-tg-bot
 
 ---
 
-## Мониторинг через Grafana
+## 📊 Мониторинг через Grafana (логи пользователей)
 
-### Установка
+Для отслеживания **какие сайты посещают пользователи** используется стек **Loki + Promtail**.
+
+### 1. Установка Loki
 
 ```bash
-# Prometheus
-sudo apt install -y prometheus prometheus-node-exporter
+# Скачиваем Loki
+sudo wget -O /tmp/loki.zip https://github.com/grafana/loki/releases/download/v3.6.7/loki-linux-amd64.zip
+sudo apt install unzip -y
+cd /tmp
+sudo unzip -o loki.zip
+sudo mv loki-linux-amd64 /usr/local/bin/loki
+sudo chmod +x /usr/local/bin/loki
 
-# Grafana
-sudo apt install -y grafana
-sudo systemctl enable --now grafana-server
+# Создаём папку для конфигов
+sudo mkdir -p /etc/loki
 
-# Xray-экспортер
-sudo wget -O /usr/local/bin/xray-exporter https://github.com/anatolykopyl/xray-exporter/releases/latest/download/xray-exporter_linux_amd64
-sudo chmod +x /usr/local/bin/xray-exporter
+# Конфиг Loki
+sudo tee /etc/loki/loki-config.yaml > /dev/null <<EOF
+auth_enabled: false
+server:
+  http_listen_port: 3100
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+  chunk_idle_period: 5m
+  chunk_retain_period: 30s
+schema_config:
+  configs:
+    - from: 2020-10-24
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /var/lib/loki/index
+    cache_location: /var/lib/loki/cache
+    cache_ttl: 24h
+  filesystem:
+    directory: /var/lib/loki/chunks
+limits_config:
+  allow_structured_metadata: false
+EOF
 
-# Создаем сервис (см. scripts/xray-exporter.service)
-sudo cp scripts/xray-exporter.service /etc/systemd/system/
+# Создаём папки для данных
+sudo mkdir -p /var/lib/loki/{index,chunks,cache}
+
+# Systemd сервис
+sudo tee /etc/systemd/system/loki.service > /dev/null <<EOF
+[Unit]
+Description=Loki Log Aggregator
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/loki -config.file=/etc/loki/loki-config.yaml
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
 sudo systemctl daemon-reload
-sudo systemctl enable --now xray-exporter
+sudo systemctl enable --now loki
 ```
 
-### Настройка Prometheus
+### 2. Установка Promtail (через Docker)
 
-Добавь в `/etc/prometheus/prometheus.yml`:
+```bash
+# Конфиг Promtail
+sudo tee /etc/loki/promtail-config.yaml > /dev/null <<EOF
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
 
-```yaml
-  - job_name: 'xray'
+positions:
+  filename: /var/lib/loki/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+  - job_name: xray
     static_configs:
-      - targets: ['localhost:9550']
-    scrape_interval: 15s
+      - targets: [localhost]
+        labels:
+          job: xray
+          __path__: /var/log/xray/access.log
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\S+ \S+) from (?P<ip>\S+):\d+ accepted tcp:(?P<domain>[^\s]+):\d+ .+ email: (?P<email>\S+)'
+      - labels:
+          email:
+          domain:
+          ip:
+EOF
+
+# Запуск Promtail в Docker
+docker run -d \
+  --name promtail \
+  -v /var/log/xray:/var/log/xray:ro \
+  -v /etc/loki/promtail-config.yaml:/etc/promtail/config.yaml:ro \
+  -v /var/lib/loki/positions.yaml:/var/lib/loki/positions.yaml \
+  --network host \
+  --restart always \
+  grafana/promtail:3.6.7 \
+  -config.file=/etc/promtail/config.yaml
 ```
 
+### 3. Подключение к Grafana
+
+1. Открой Grafana: `http://твой-ip:3000`
+2. **Configuration → Data Sources → Add data source**
+3. Выбери **Loki**
+4. URL: `http://localhost:3100`
+5. **Save & Test**
+
+### 4. Полезные запросы (LogQL)
+
+```logql
+# Все логи за последние 5 минут
+{job="xray"}
+
+# Активность по пользователям (график)
+sum by (email) (count_over_time({job="xray"}[5m]))
+
+# Топ-10 доменов за день
+topk(10, sum by (domain) (count_over_time({job="xray"}[24h])))
+
+# Логи конкретного пользователя
+{email="alena@myserver.com"}
+
+# Поиск по IP
+{job="xray"} |= "80.83.235.35"
+```
+
+---
+
+## 📥 Готовые дашборды
+
+### Дашборд "Активность пользователей" (JSON)
+
+Сохрани как `dashboards/user-activity.json` и импортируй в Grafana:
+
+<details>
+<summary>🔽 Нажми для JSON</summary>
+
+```json
+{
+  "dashboard": {
+    "title": "Активность пользователей",
+    "panels": [
+      {
+        "title": "Активность по пользователям",
+        "type": "timeseries",
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+        "targets": [
+          {
+            "expr": "sum by (email) (count_over_time({job=\"xray\"}[5m]))",
+            "legendFormat": "{{email}}",
+            "datasource": "Loki"
+          }
+        ]
+      },
+      {
+        "title": "Топ доменов",
+        "type": "barchart",
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+        "targets": [
+          {
+            "expr": "topk(10, sum by (domain) (count_over_time({job=\"xray\"}[24h])))",
+            "legendFormat": "{{domain}}",
+            "datasource": "Loki"
+          }
+        ]
+      },
+      {
+        "title": "Логи в реальном времени",
+        "type": "logs",
+        "gridPos": {"h": 12, "w": 24, "x": 0, "y": 8},
+        "targets": [
+          {
+            "expr": "{job=\"xray\"}",
+            "datasource": "Loki"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+</details>
 ---
 
 ## Примеры уведомлений
