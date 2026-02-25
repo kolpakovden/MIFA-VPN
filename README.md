@@ -189,16 +189,16 @@ sudo systemctl enable --now xray-exporter
 ```
 ✅ Пользователь добавлен!
 
-👤 Имя: Наташа
-📧 Email: natalya@myserver.com
-🆔 UUID: 5a8e1913-5c38-460b-9848-01a7c100e640
+👤 Имя: c001zer0
+📧 Email: c001zer0@myserver.com
+🆔 UUID: 3f7b8a91-6d4c-4e2f-9a1d-8c5b3e7f2a18
 
 🔑 Ключи:
-443: vless://5a8e1913-5c38...
-8443: vless://5a8e1913-5c38...
-2053: vless://5a8e1913-5c38...
-2083: vless://5a8e1913-5c38...
-50273: vless://5a8e1913-5c38...
+443: vless://3f7b8a91-6d4c...
+8443: vless://3f7b8a91-6d4c...
+2053: vless://3f7b8a91-6d4c...
+2083: vless://3f7b8a91-6d4c...
+50273: vless://3f7b8a91-6d4c...
 ```
 
 ---
@@ -243,7 +243,7 @@ pet_vless_telegram/
 - [@maxgalzer](https://github.com/maxgalzer) за [xray-traffic-bot](https://github.com/maxgalzer/xray-traffic-bot)
 - [@Davoyan](https://github.com/Davoyan) за [xray-access-view](https://github.com/Davoyan/xray-access-view)
 - [@anatolykopyl](https://github.com/anatolykopyl) за [xray-exporter](https://github.com/anatolykopyl/xray-exporter)
-- Всем, кто держит свободный интернет 🌐
+- Всем, кто держит свободный интернет 
 
 ---
 
