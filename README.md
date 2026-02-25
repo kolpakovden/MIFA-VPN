@@ -83,16 +83,31 @@ cd pet_vless_telegram
 
 ```
 pet_vless_telegram/
-├── README.md                      # Ты здесь
-├── MANIFEST.md                    # Мотивация
-├── docs/                          # Документация по модулям
-│   ├── monitoring.md
-│   ├── telegram-bot.md
-│   └── xray-config.md
-├── config/                        # Конфиги (примеры)
-├── scripts/                       # Скрипты и сервисы
-├── dashboards/                    # JSON дашбордов для Grafana
-└── .env.example                   # Пример переменных
+├── README.md                               # Главная документация
+├── MANIFEST.md                             # Мотивация и история проекта
+├── .env.example                            # Пример переменных окружения
+├── .gitignore                              # Игнорируемые файлы
+│
+├── docs/                                   # Документация по модулям
+│   ├── monitoring.md                       # Установка Loki + Promtail
+│   ├── telegram-bot.md                     # Инструкции по ботам
+│   ├── xray-config.md                      # Настройка Xray
+│   └── commands.md                         # Шпаргалка по командам
+│
+├── config/                                 # Примеры конфигов
+│   ├── example.config.json                 # Пример конфига Xray
+│   ├── loki-config.yaml                    # Конфиг Loki
+│   ├── promtail-config.yaml                # Конфиг Promtail
+│   └── loki.service                        # Systemd сервис для Loki
+│
+├── scripts/                                # Скрипты и сервисы
+│   ├── check_users.sh                      # Бот уведомлений о новых IP
+│   ├── bot.py                              # Telegram-бот управления
+│   ├── xray-tg-bot.service                 # Systemd для бота управления
+│   └── xray-exporter.service               # Systemd для экспортера (опционально)
+│
+└── dashboards/                             # JSON дашбордов для Grafana
+    └── user-activity.json                  # Дашборд "Активность пользователей"
 ```
 
 ---
