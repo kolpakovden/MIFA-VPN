@@ -1,29 +1,31 @@
-# 🛡️ Pet Project: VLESS + Telegram Monitoring
+# 🛡️ Pet Project: VLESS + Telegram Monitoring + Grafana
 
-![Version](https://img.shields.io/badge/version-1.0-blue)
+![Version](https://img.shields.io/badge/version-2.0-blue)
 ![Xray](https://img.shields.io/badge/Xray-25.8.3-green)
 ![License](https://img.shields.io/badge/license-MIT-orange)
 ![Telegram](https://img.shields.io/badge/Telegram-bot-26A5E4)
+![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800)
 
-> Личный проект для мониторинга подключений к VPN-серверу с уведомлениями в Telegram.
+> Полный мониторинг VPN-сервера: от подключений до красивых графиков.
 
 ---
 
 ## 📋 О проекте
 
-Поднял свой сервер на **VLESS + Reality** для себя и друзей.  
-Чтобы понимать, кто и когда подключается, написал скрипт, который отправляет уведомления в Telegram с геолокацией и провайдером.
+Поднял сервер на **VLESS + Reality** для себя и друзей.  
+Постепенно дорос до полноценной системы мониторинга:
 
-### Фичи
+### ✨ Что внутри
 
-| | |
-|---|---|
+| Компонент | Описание |
+|-----------|----------|
 | 👥 **14 пользователей** |
 | 🌐 **5 портов** | 443, 8443, 2053, 2083, 50273 |
 | 🎭 **11 доменов маскировки** | techadvisor, lemonde, github и др. |
-| 🔔 **Telegram-уведомления** | о каждом новом подключении |
+| 🤖 **Telegram-бот** | уведомления о новых подключениях |
 | 📍 **Геолокация** | город, регион, страна, провайдер |
-| 🔑 **Shadowsocks** | на 2040 порту (для тех, кому лень настраивать VLESS) |
+| 📊 **XrayView** | быстрый просмотр кто куда ходит |
+| 📈 **Prometheus + Grafana** | графики трафика и системных метрик |
 
 ---
 
@@ -32,7 +34,7 @@
 ### 1. Клонируем репозиторий
 
 ```bash
-git clone https://github.com/kolpakovden/pet_vless_telegram.git
+git clone https://github.com/твой-логин/pet_vless_telegram.git
 cd pet_vless_telegram
 ```
 
@@ -40,28 +42,107 @@ cd pet_vless_telegram
 
 1. Напиши [@BotFather](https://t.me/botfather) → `/newbot` → получи токен
 2. Напиши [@userinfobot](https://t.me/userinfobot) → получи Chat ID
-3. Вставь их в скрипт `scripts/check_users_v3.sh`
+3. Вставь их в скрипт `scripts/check_users.sh`
 
-### 3. Запускаем скрипт мониторинга
+### 3. Запускаем мониторинг подключений
 
 ```bash
-chmod +x scripts/check_users_v3.sh
-./scripts/check_users_v3.sh
+chmod +x scripts/check_users.sh
+./scripts/check_users.sh
 ```
 
-### 4. Добавляем в cron (для автоматической проверки)
+### 4. Добавляем в cron
 
 ```bash
 crontab -e
-# Добавить строку:
-* * * * * /полный/путь/к/scripts/check_users_v3.sh
+* * * * * /полный/путь/к/scripts/check_users.sh
 ```
 
 ---
 
-## Пример уведомления
+## Мониторинг через Grafana
 
-В Telegram приходит такое сообщение:
+### Установка Prometheus + Grafana
+
+```bash
+# Prometheus
+sudo apt install -y prometheus prometheus-node-exporter
+
+# Grafana
+sudo apt install -y grafana
+sudo systemctl enable --now grafana-server
+```
+
+### Настройка Xray для сбора метрик
+
+В конфиг Xray (`/usr/local/etc/xray/config.json`) добавь:
+
+```json
+"stats": {},
+"api": {
+    "tag": "api",
+    "listen": "127.0.0.1:8080",
+    "services": ["StatsService"]
+},
+"policy": {
+    "levels": {
+        "0": {
+            "statsUserUplink": true,
+            "statsUserDownlink": true
+        }
+    }
+}
+```
+
+### Установка Xray-экспортера
+
+```bash
+sudo wget -O /usr/local/bin/xray-exporter https://github.com/anatolykopyl/xray-exporter/releases/latest/download/xray-exporter_linux_amd64
+sudo chmod +x /usr/local/bin/xray-exporter
+
+# Создаем сервис
+sudo tee /etc/systemd/system/xray-exporter.service > /dev/null <<EOF
+[Unit]
+Description=Xray Exporter
+After=network.target xray.service
+
+[Service]
+Type=simple
+User=nobody
+Group=nogroup
+ExecStart=/usr/local/bin/xray-exporter --xray-endpoint=127.0.0.1:8080 --listen=0.0.0.0:9550
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now xray-exporter
+```
+
+### Настройка Prometheus
+
+Добавь в `/etc/prometheus/prometheus.yml`:
+
+```yaml
+  - job_name: 'xray'
+    static_configs:
+      - targets: ['localhost:9550']
+    scrape_interval: 15s
+```
+
+Перезапусти:
+
+```bash
+sudo systemctl restart prometheus
+```
+
+---
+
+## Примеры
+
+### Уведомление в Telegram
 
 ```
 🔔 Новое подключение к VPN!
@@ -73,40 +154,25 @@ crontab -e
 🕒 Время: 24.02.2026 19:53:01
 ```
 
+### Графики в Grafana
+
+(скриншоты будут позже или не будут посмотрим=))
+
 ---
 
-## 📂 Структура проекта
+## Структура проекта
 
 ```
 pet_vless_telegram/
 ├── README.md                 # Документация
-├── config/                   # Конфиги Xray
-│   ├── config.json           # Полный рабочий конфиг (личный)
-│   └── example.config.json   # Пример конфига (без UUID)
-├── scripts/                  # Скрипты мониторинга
-│   └── check_users_v3.sh     # Основной скрипт
-└── docs/                      # Дополнительные материалы
+├── config/
+│   ├── config.json           # Личный конфиг (не в git)
+│   └── example.config.json   # Пример конфига
+├── scripts/
+│   └── check_users.sh        # Скрипт мониторинга подключений
+└── docs/
     └── commands.md           # Шпаргалка по командам
 ```
-
----
-
-## Используемые технологии
-
-- **[Xray-core](https://github.com/XTLS/Xray-core)** — прокси-сервер (VLESS + Reality)
-- **Bash** — скрипт мониторинга
-- **Telegram Bot API** — отправка уведомлений
-- **[ip-api.com](http://ip-api.com)** — бесплатная геолокация по IP
-
----
-
-## Мониторинг в действии
-
-Скрипт каждую минуту:
-1. Читает лог Xray (`/var/log/xray/access.log`)
-2. Находит новые IP за последние 5 минут
-3. Определяет геолокацию через ip-api.com
-4. Отправляет уведомление в Telegram
 
 ---
 
@@ -114,31 +180,21 @@ pet_vless_telegram/
 
 | Действие | Команда |
 |----------|---------|
-| Посмотреть текущие активные IP | `cat /tmp/current_ips.txt` |
-| Посмотреть старые IP | `cat /tmp/online_ips.txt` |
-| Ручной запуск скрипта | `/usr/local/bin/check_users_v3.sh` |
-| Логи Xray в реальном времени | `tail -f /var/log/xray/access.log` |
-| Перезапуск Xray | `sudo systemctl restart xray` |
-| Логи скрипта | `sudo grep check_users /var/log/syslog` |
+| Посмотреть активные IP | `cat /tmp/current_ips.txt` |
+| Ручной запуск скрипта | `/usr/local/bin/check_users.sh` |
+| Логи Xray | `tail -f /var/log/xray/access.log` |
+| Статус Xray | `sudo systemctl status xray` |
+| Статус Grafana | `sudo systemctl status grafana-server` |
+| Статус Prometheus | `sudo systemctl status prometheus` |
+| Статус экспортера | `sudo systemctl status xray-exporter` |
 
 ---
 
 ## Благодарности
 
-Отдельное спасибо:
-- [@maxgalzer](https://github.com/maxgalzer) за [xray-traffic-bot](https://github.com/maxgalzer/xray-traffic-bot) — был отправной точкой
+- [@maxgalzer](https://github.com/maxgalzer) за [xray-traffic-bot](https://github.com/maxgalzer/xray-traffic-bot)
 - [@Davoyan](https://github.com/Davoyan) за [xray-access-view](https://github.com/Davoyan/xray-access-view)
-- Всем, кто держит свободный интернет 
-
----
-
-## Как внести вклад
-
-1. Форкни репозиторий
-2. Создай ветку (`git checkout -b feature/amazing`)
-3. Закоммить изменения (`git commit -m 'Add some amazing'`)
-4. Запушь (`git push origin feature/amazing`)
-5. Открой Pull Request
+- [@anatolykopyl](https://github.com/anatolykopyl) за [xray-exporter](https://github.com/anatolykopyl/xray-exporter)
 
 ---
 
