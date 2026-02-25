@@ -207,10 +207,10 @@ sudo systemctl enable --now xray-exporter
 
 ```
 pet_vless_telegram/
-├── README.md                                # Техническая документация (установка, команды)
-├── MANIFEST.md                               # Душа проекта — зачем это всё
+├── README.md                                  # Техническая документация (установка, команды)
+├── MANIFEST.md                                # Душа проекта — зачем это всё
 ├── config/
-│   ├── README_config.md                      # Описание полей конфига (что и как менять)
+│   ├── README_config.md                       # Описание полей конфига (что и как менять)
 │   └── example.config.json                    # Пример конфига (без личных данных)
 ├── scripts/
 │   ├── check_users.sh                         # Скрипт уведомлений о подключениях
