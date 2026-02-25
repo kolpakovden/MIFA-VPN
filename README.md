@@ -207,18 +207,18 @@ sudo systemctl enable --now xray-exporter
 
 ```
 pet_vless_telegram/
-├── README.md                 # Документация (ты здесь)
+├── README.md                                # Документация (ты здесь)
 ├── config/
-│   ├── config.json           # Личный конфиг (не в git)
-│   └── example.config.json   # Пример конфига
+│   ├── README_config.md                     # Описание конфига (что и как)
+│   └── example.config.json                  # Пример конфига (без личных данных)
 ├── scripts/
-│   ├── check_users.sh        # Скрипт уведомлений о подключениях
-│   ├── xray-tg-bot.service   # Systemd сервис для бота
-│   ├── xray-exporter.service # Systemd сервис для экспортера
-│   └── bot.py                # Telegram-бот управления
-├── .env.example              # Пример переменных окружения
+│   ├── check_users.sh                       # Скрипт уведомлений о подключениях
+│   ├── xray-tg-bot.service                  # Systemd сервис для бота
+│   ├── xray-exporter.service                # Systemd сервис для экспортера
+│   └── bot.py                               # Telegram-бот управления
+├── .env.example                             # Пример переменных окружения
 └── docs/
-    └── commands.md           # Шпаргалка по командам
+    └── commands.md                          # Шпаргалка по командам
 ```
 
 ---
