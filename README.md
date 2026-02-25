@@ -129,12 +129,16 @@ pet_vless_telegram/
 
 ---
 
-## Благодарности
+##  Благодарности
 
-- [@maxgalzer](https://github.com/maxgalzer) за [xray-traffic-bot](https://github.com/maxgalzer/xray-traffic-bot)
-- [@Davoyan](https://github.com/Davoyan) за [xray-access-view](https://github.com/Davoyan/xray-access-view)
-- [@anatolykopyl](https://github.com/anatolykopyl) за [xray-exporter](https://github.com/anatolykopyl/xray-exporter)
-- Всем, кто держит свободный интернет 
+- [@maxgalzer](https://github.com/maxgalzer) за [xray-traffic-bot](https://github.com/maxgalzer/xray-traffic-bot) — отправная точка для уведомлений
+- [@Davoyan](https://github.com/Davoyan) за [xray-access-view](https://github.com/Davoyan/xray-access-view) — быстрый просмотр логов
+- [@anatolykopyl](https://github.com/anatolykopyl) за [xray-exporter](https://github.com/anatolykopyl/xray-exporter) — метрики для Grafana
+- [@Globchansky](https://github.com/Globchansky) за [xray-stats-exporter](https://github.com/Globchansky/xray-stats-exporter) — альтернативный экспортер
+- [@mintel](https://github.com/mintel) за [promtail-static](https://github.com/mintel/promtail-static) — статические сборки Promtail
+- [@grafana](https://github.com/grafana) за [Loki](https://github.com/grafana/loki) и [Grafana](https://github.com/grafana/grafana) — визуализация всего и вся
+- [@XTLS](https://github.com/XTLS) за [Xray-core](https://github.com/XTLS/Xray-core) — сердце проекта
+- **Всем, кто держит свободный интернет**
 
 ---
 
