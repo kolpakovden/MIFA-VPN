@@ -75,7 +75,8 @@ sudo systemctl daemon-reload
 sudo systemctl enable --now node_exporter
 Проверка
 curl -s http://localhost:9101/metrics | grep node_cpu | head -5
-4. Настройка Prometheus
+
+### 4. Настройка Prometheus
 
 Добавить в /etc/prometheus/prometheus.yml:
 
@@ -87,7 +88,8 @@ scrape_configs:
 Проверка
 curl -s http://localhost:9090/api/v1/targets \
 | python3 -m json.tool | grep -A 5 node_custom
-5. Подключение к Grafana
+
+### 5. Подключение к Grafana
 
 Открыть: http://<SERVER-IP>:3000
 
