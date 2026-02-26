@@ -161,7 +161,3 @@ sudo journalctl -u xray-tg-bot -f
 Xray → access.log → check_users.sh → Telegram
 Admin → Telegram → bot.py → Xray config/API
 ```
-
----
-
-**Готово!** 🔥 Этот файл можно смело добавлять в `docs/telegram-bot.md`.
