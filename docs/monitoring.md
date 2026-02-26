@@ -119,8 +119,8 @@ Network TX	rate(node_network_transmit_bytes_total{device="ens3"}[1m])
 ### 7. Готовый дашборд
 
 Импортируй:
+[`dashboards/user-activity.json`](dashboards/user-activity.json)
 
-dashboards/user-activity.json
 После импорта будут доступны:
 Активность пользователей
 Топ доменов
