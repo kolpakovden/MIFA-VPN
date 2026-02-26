@@ -81,7 +81,7 @@ cd MIFA-VPN
 ## Project Structure
 
 ```
-pet_vless_telegram/
+MIFA-VPN/
 ├── README.md                               # Главная документация
 ├── MANIFEST.md                             # Мотивация и история
 ├── .env.example                            # Пример переменных
