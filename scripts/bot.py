@@ -29,7 +29,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not await is_allowed(update):
         return
     await update.message.reply_text(
-        "👋 Привет, админ!\n\n"
+        "Привет, админ!\n\n"
         "/add Имя — добавить пользователя\n"
         "/list — список всех пользователей\n"
         "/del email — удалить пользователя\n"
@@ -89,11 +89,11 @@ async def add_user(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keys = "\n".join([generate_vless_link(uuid, email, p) for p in ports])
     
     msg = (
-        f"✅ *Пользователь добавлен!*\n\n"
-        f"👤 *Имя:* {name}\n"
-        f"📧 *Email:* `{email}`\n"
-        f"🆔 *UUID:* `{uuid}`\n\n"
-        f"🔑 *Ключи:*\n{keys}"
+        f" *Пользователь добавлен!*\n\n"
+        f" *Имя:* {name}\n"
+        f" *Email:* `{email}`\n"
+        f" *UUID:* `{uuid}`\n\n"
+        f" *Ключи:*\n{keys}"
     )
     
     await update.message.reply_text(msg, parse_mode='Markdown')
