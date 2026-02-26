@@ -10,7 +10,7 @@
  Установка и настройка
 
  1. Скачать скрипт
-wget -O /usr/local/bin/check_users.sh https://raw.githubusercontent.com/твой-логин/pet_vless_telegram/main/scripts/example.check_users.sh
+wget -O /usr/local/bin/check_users.sh https://raw.githubusercontent.com/kolpakovden/MIFA-VPN/main/scripts/check_users.sh
  2. Сделать исполняемым
 chmod +x /usr/local/bin/check_users.sh
  3. Отредактировать, вставив свои токен и chat_id
