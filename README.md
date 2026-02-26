@@ -18,7 +18,7 @@ Self-hosted VPN server with full monitoring and Telegram control.
 - **Grafana + Loki** — мониторинг пользовательской активности
 - **Prometheus + Node Exporter** — системные метрики сервера
 
-> Зачем это всё? → [`MANIFEST.md`](MANIFEST.md)
+> Зачем это всё? → [**ABOUT.md**](ABOUT.md)
 
 ---
 
