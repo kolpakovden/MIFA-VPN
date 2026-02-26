@@ -5,8 +5,8 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/pet_vless_telegram
-ExecStart=/opt/pet_vless_telegram/venv/bin/python /opt/pet_vless_telegram/scripts/bot.py
+WorkingDirectory=/opt/MIFA-VPN
+ExecStart=/opt/MIFA-VPN/venv/bin/python /opt/MIFA-VPN/scripts/bot.py
 Restart=always
 RestartSec=10
 
