@@ -62,9 +62,9 @@ openssl rand -hex 8
 
 ### Использовать:
 
-- `privateKey` — в `realitySettings`
-- `publicKey` — в клиентском конфиге
-- `shortId` — в обоих
+- `privateKey` - в `realitySettings`
+- `publicKey` - в клиентском конфиге
+- `shortId` - в обоих
 
 ---
 
@@ -76,7 +76,7 @@ openssl rand -hex 8
 xray run -test -config /usr/local/etc/xray/config.json
 ```
 
-Если ошибок нет — можно перезапускать.
+Если ошибок нет - можно перезапускать.
 
 ---
 
