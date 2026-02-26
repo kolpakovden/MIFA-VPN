@@ -38,7 +38,7 @@ docker run -d \
   -config.file=/etc/promtail/config.yaml
 ```
 
-## 📊 Prometheus + Node Exporter
+## Prometheus + Node Exporter
 
 ### Установка Node Exporter
 
