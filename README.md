@@ -51,7 +51,7 @@ Xray (VLESS + Reality)
 ## Quick Start
 
 ```bash
-git clone https://github.com/your-username/pet_vless_telegram.git
+git clone https://github.com/kolpakovden/pet_vless_telegram.git
 cd pet_vless_telegram
 ```
 
