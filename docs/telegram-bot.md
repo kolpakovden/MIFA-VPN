@@ -60,7 +60,7 @@ crontab -e
 ### Example Notification
 
 ```
-🔔 New VPN connection!
+New VPN connection!
 IP: 80.83.237.47
 City: Irkutsk
 Region: Irkutsk Oblast
