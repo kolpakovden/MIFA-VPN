@@ -1,4 +1,9 @@
 # 🛡️ VLESS + Telegram Monitoring + Grafana
+![Version](https://img.shields.io/badge/version-3.0-blue)
+![Xray](https://img.shields.io/badge/Xray-25.8.3-green)
+![Telegram](https://img.shields.io/badge/Telegram-bot-26A5E4)
+![Grafana](https://img.shields.io/badge/Grafana-dashboard-F46800)
+![Loki](https://img.shields.io/badge/Loki-logs-4A90E2)
 
 Self-hosted VPN server with full monitoring and Telegram control.
 
@@ -109,7 +114,7 @@ pet_vless_telegram/
 
 ---
 
-## 📊 Dashboards
+## Dashboards
 
 Импортируй дашборд [`dashboards/user-activity.json`](dashboards/user-activity.json) в Grafana.
 
@@ -146,9 +151,9 @@ pet_vless_telegram/
 
 ---
 
-## 📄 License
+## License
 
-MIT — делайте что хотите, но лучше делитесь опытом!
+MIT — бери, используй, улучшай
 
 ---
 
