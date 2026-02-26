@@ -1,4 +1,8 @@
-# Мониторинг через Grafana + Loki
+# Мониторинг через Grafana + Loki + Prometheus
+
+Полный стек для мониторинга:
+- **Loki + Promtail** — сбор логов пользователей (кто куда ходит)
+- **Prometheus + Node Exporter** — мониторинг ресурсов сервера (CPU, RAM, диск, сеть)
 
 ## Установка Loki
 
@@ -97,6 +101,35 @@ sudo systemctl enable --now node_exporter
 3. Выбрать **Loki**, URL: `http://localhost:3100`
 4. **Save & Test**
 
+## Проверка работоспособности
+
+```bash
+# Проверить Loki
+curl http://localhost:3100/ready
+
+# Проверить Promtail
+curl -s http://localhost:9080/metrics | grep promtail_read_bytes_total
+
+# Проверить Node Exporter
+curl -s http://localhost:9101/metrics | grep node_cpu | head -5
+
+# Проверить Prometheus
+curl -s http://localhost:9090/api/v1/targets | python3 -m json.tool | grep -A 5 node_custom
+
 ## Дашборды
 
 Импортируй готовый дашборд из [`dashboards/user-activity.json`](../dashboards/user-activity.json)
+
+
+
+
+### 3. Добавить **ссылку на пример дашборда** в конце
+
+```markdown
+## 📥 Готовый дашборд
+
+Импортируй дашборд [`user-activity.json`](../dashboards/user-activity.json) в Grafana, чтобы сразу видеть:
+- Активность пользователей
+- Топ доменов
+- Логи в реальном времени
+- Системные метрики (CPU, RAM, диск, сеть)
