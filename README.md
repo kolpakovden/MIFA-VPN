@@ -98,18 +98,18 @@ pet_vless_telegram/
 │
 ├── config/                                 # Примеры конфигов
 │   ├── example.config.json                 # Xray (пример)
-│   ├── loki-config.yaml                     # Конфиг Loki
-│   ├── promtail-config.yaml                  # Конфиг Promtail
-│   └── loki.service                          # Systemd сервис
+│   ├── loki-config.yaml                    # Конфиг Loki
+│   ├── promtail-config.yaml                # Конфиг Promtail
+│   └── loki.service                        # Systemd сервис
 │
 ├── scripts/                                # Скрипты
-│   ├── check_users.sh                       # Бот уведомлений
-│   ├── bot.py                               # Бот управления
-│   ├── xray-tg-bot.service                   # Systemd для бота
-│   └── xray-exporter.service                 # (опционально)
+│   ├── check_users.sh                      # Бот уведомлений
+│   ├── bot.py                              # Бот управления
+│   ├── xray-tg-bot.service                 # Systemd для бота
+│   └── xray-exporter.service               # (опционально)
 │
 └── dashboards/                             # JSON дашбордов
-    └── user-activity.json                   # Дашборд для Grafana
+    └── user-activity.json                  # Дашборд для Grafana
 ```
 
 ---
