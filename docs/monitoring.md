@@ -10,7 +10,7 @@ Grafana — визуализация
 Logs → Promtail → Loki → Grafana
 Metrics → Node Exporter → Prometheus → Grafana
 
-# 1. Установка Loki
+### 1. Установка Loki
 Скачать и установить
 sudo wget -O /usr/local/bin/loki \
 https://github.com/grafana/loki/releases/download/v3.6.7/loki-linux-amd64
@@ -28,7 +28,7 @@ sudo systemctl enable --now loki
 Проверка
 curl http://localhost:3100/ready
 
-# 2. Установка Promtail
+### 2. Установка Promtail
 
 Promtail собирает логи и отправляет их в Loki.
 
@@ -48,7 +48,7 @@ docker run -d \
 Проверка
 curl -s http://localhost:9080/metrics | grep promtail_read_bytes_total
 
-# 3. Prometheus + Node Exporter
+### 3. Prometheus + Node Exporter
 ## Установка Node Exporter
 wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
 tar xvf node_exporter-1.8.2.linux-amd64.tar.gz
