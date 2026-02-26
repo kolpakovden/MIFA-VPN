@@ -1,94 +1,150 @@
-## Система
+# Commands Cheat Sheet
 
-| Команда | Описание |
-|---------|----------|
-| `sudo systemctl status xray` | Статус Xray |
-| `sudo systemctl restart xray` | Перезапуск Xray |
-| `sudo journalctl -u xray -f` | Логи Xray в реальном времени |
-| `sudo systemctl status loki` | Статус Loki |
-| `sudo systemctl status promtail` | Статус Promtail |
-| `sudo systemctl status xray-tg-bot` | Статус Telegram-бота управления |
-| `sudo journalctl -u xray-tg-bot -f` | Логи бота |
+Быстрый справочник по управлению сервером, Xray и мониторингом.
 
 ---
 
-## Xray
+## Admin
 
-| Команда | Описание |
-|---------|----------|
-| `xray uuid` | Сгенерировать новый UUID |
-| `xray x25519` | Сгенерировать ключи Reality |
-| `openssl rand -hex 8` | Сгенерировать shortId |
-| `xray run -test -config /usr/local/etc/xray/config.json` | Проверить конфиг |
-| `tail -f /var/log/xray/access.log` | Логи подключений |
-| `xrayview` | Статистика посещений |
-| `xrayview --online` | Кто онлайн сейчас |
+### Xray
 
----
+#### Статус / перезапуск
+```bash
+systemctl status xray
+systemctl restart xray
+```
 
-## Мониторинг
+#### Проверить конфиг
+```bash
+xray run -test -config /usr/local/etc/xray/config.json
+```
 
-| Команда | Описание |
-|---------|----------|
-| `cat /tmp/current_ips.txt` | Текущие активные IP |
-| `curl http://localhost:3100/ready` | Проверка Loki |
-| `curl http://localhost:3100/loki/api/v1/labels` | Метки в Loki |
-| `docker logs promtail --tail 20` | Логи Promtail |
-| `docker restart promtail` | Перезапуск Promtail |
+#### Генерация ключей
+```bash
+xray uuid           # Новый UUID
+xray x25519         # Reality-ключи
+openssl rand -hex 8 # shortId
+```
 
 ---
 
-## Telegram-бот уведомлений
+### Telegram Bot (management)
 
-| Команда | Описание |
-|---------|----------|
-| `crontab -e` | Редактировать cron |
-| `* * * * * /usr/local/bin/check_users.sh` | Добавить в cron |
-| `/usr/local/bin/check_users.sh` | Ручной запуск |
-| `tail -f /tmp/debug.log` | Отладка скрипта (если включена) |
+```bash
+systemctl status xray-tg-bot
+systemctl restart xray-tg-bot
+```
 
 ---
 
-## Docker
+### Promtail (Docker)
 
-| Команда | Описание |
-|---------|----------|
-| `docker ps \| grep promtail` | Статус контейнера |
-| `docker stop promtail` | Остановить |
-| `docker rm promtail` | Удалить |
-| `docker logs promtail --tail 50` | Логи |
-| `docker restart promtail` | Перезапустить |
-
----
-
-## Системные ресурсы
-
-| Команда | Описание |
-|---------|----------|
-| `df -h` | Свободное место на диске |
-| `free -h` | Использование RAM |
-| `uptime` | Нагрузка CPU |
-| `top -b -n 1 \| head -15` | Топ процессов |
-| `ip -s link` | Статистика сети |
-| `ss -tunap \| grep xray \| wc -l` | Активные соединения Xray |
+```bash
+docker ps | grep promtail
+docker restart promtail
+docker stop promtail
+docker rm promtail
+```
 
 ---
 
-## Prometheus
+### Cron (Notification Bot)
 
-| Команда | Описание |
-|---------|----------|
-| `sudo systemctl status prometheus` | Статус сервиса |
-| `sudo journalctl -u prometheus -f` | Логи в реальном времени |
-| `curl -s http://localhost:9090/api/v1/targets \| python3 -m json.tool` | Проверка целей |
+```bash
+crontab -e
+```
+
+Добавить:
+
+```
+* * * * * /usr/local/bin/check_users.sh
+```
+
+Ручной запуск:
+
+```bash
+/usr/local/bin/check_users.sh
+```
 
 ---
 
-## Loki + Promtail
+## Monitoring
 
-| Команда | Описание |
-|---------|----------|
-| `sudo systemctl status loki` | Статус Loki |
-| `docker logs promtail --tail 30` | Логи Promtail |
-| `curl -s http://localhost:3100/loki/api/v1/labels \| python3 -m json.tool` | Все метки в Loki |
-| `curl -s "http://localhost:3100/loki/api/v1/label/email/values" \| python3 -m json.tool` | Список пользователей |
+### Сервисы
+
+```bash
+systemctl status loki
+systemctl status prometheus
+systemctl status xray
+systemctl status xray-tg-bot
+```
+
+### Prometheus
+
+```bash
+curl -s http://localhost:9090/api/v1/targets | python3 -m json.tool
+```
+
+### Loki
+
+```bash
+# Проверка готовности
+curl http://localhost:3100/ready
+
+# Все labels
+curl -s http://localhost:3100/loki/api/v1/labels | python3 -m json.tool
+
+# Список пользователей
+curl -s "http://localhost:3100/loki/api/v1/label/email/values" | python3 -m json.tool
+```
+
+### Активные IP
+
+```bash
+cat /tmp/current_ips.txt
+```
+
+### Системные ресурсы
+
+```bash
+df -h                  # Disk
+free -h                # RAM
+uptime                 # CPU load
+ip -s link             # Network
+ss -tunap | grep xray | wc -l  # Активные соединения
+```
+
+---
+
+## Debug
+
+### Логи сервисов
+
+```bash
+journalctl -u xray -f
+journalctl -u loki -f
+journalctl -u prometheus -f
+journalctl -u xray-tg-bot -f
+```
+
+### Логи подключений Xray
+
+```bash
+tail -f /var/log/xray/access.log
+```
+
+### Docker логи Promtail
+
+```bash
+docker logs promtail --tail 50
+```
+
+### Debug notification-бота
+
+```bash
+tail -f /tmp/debug.log
+```
+
+---
+
+**Готово!** 🔥 Теперь `commands.md` выглядит так же круто, как и остальные документы.
