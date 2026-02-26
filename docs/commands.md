@@ -58,3 +58,37 @@
 | `docker rm promtail` | Удалить |
 | `docker logs promtail --tail 50` | Логи |
 | `docker restart promtail` | Перезапустить |
+
+---
+
+## Системные ресурсы
+
+| Команда | Описание |
+|---------|----------|
+| `df -h` | Свободное место на диске |
+| `free -h` | Использование RAM |
+| `uptime` | Нагрузка CPU |
+| `top -b -n 1 \| head -15` | Топ процессов |
+| `ip -s link` | Статистика сети |
+| `ss -tunap \| grep xray \| wc -l` | Активные соединения Xray |
+
+---
+
+## Prometheus
+
+| Команда | Описание |
+|---------|----------|
+| `sudo systemctl status prometheus` | Статус сервиса |
+| `sudo journalctl -u prometheus -f` | Логи в реальном времени |
+| `curl -s http://localhost:9090/api/v1/targets \| python3 -m json.tool` | Проверка целей |
+
+---
+
+## Loki + Promtail
+
+| Команда | Описание |
+|---------|----------|
+| `sudo systemctl status loki` | Статус Loki |
+| `docker logs promtail --tail 30` | Логи Promtail |
+| `curl -s http://localhost:3100/loki/api/v1/labels \| python3 -m json.tool` | Все метки в Loki |
+| `curl -s "http://localhost:3100/loki/api/v1/label/email/values" \| python3 -m json.tool` | Список пользователей |
