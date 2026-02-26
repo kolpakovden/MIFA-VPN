@@ -49,7 +49,9 @@ docker run -d \
 curl -s http://localhost:9080/metrics | grep promtail_read_bytes_total
 
 ### 3. Prometheus + Node Exporter
-## Установка Node Exporter
+
+Установка Node Exporter
+
 wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
 tar xvf node_exporter-1.8.2.linux-amd64.tar.gz
 
@@ -103,27 +105,24 @@ URL: http://localhost:9090
 
 Нажать Save & Test
 
-6. Полезные PromQL-запросы
+### 6. Полезные PromQL-запросы
+
 Метрика	PromQL
 CPU %	100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 RAM %	(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100
 Disk %	(node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100
 Network RX	rate(node_network_receive_bytes_total{device="ens3"}[1m])
 Network TX	rate(node_network_transmit_bytes_total{device="ens3"}[1m])
-7. Готовый дашборд
+
+### 7. Готовый дашборд
 
 Импортируй:
 
 dashboards/user-activity.json
-
 После импорта будут доступны:
-
 Активность пользователей
-
 Топ доменов
-
 Логи в реальном времени
-
 CPU / RAM / Disk / Network
 
 Полезные команды
@@ -134,3 +133,7 @@ systemctl status node_exporter
 # Просмотр логов
 journalctl -u loki -f
 journalctl -u node_exporter -f
+
+# Статус Promtail
+docker ps | grep promtail
+docker logs promtail --tail 20
