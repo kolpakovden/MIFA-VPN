@@ -38,6 +38,56 @@ docker run -d \
   -config.file=/etc/promtail/config.yaml
 ```
 
+## 📊 Prometheus + Node Exporter
+
+### Установка Node Exporter
+
+```bash
+# Скачать и установить
+wget https://github.com/prometheus/node_exporter/releases/download/v1.8.2/node_exporter-1.8.2.linux-amd64.tar.gz
+tar xvf node_exporter-1.8.2.linux-amd64.tar.gz
+sudo mv node_exporter-1.8.2.linux-amd64/node_exporter /usr/local/bin/
+
+# Создать сервис
+sudo tee /etc/systemd/system/node_exporter.service > /dev/null <<EOF
+[Unit]
+Description=Node Exporter
+After=network.target
+
+[Service]
+Type=simple
+User=root
+ExecStart=/usr/local/bin/node_exporter --web.listen-address=:9101
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now node_exporter
+```
+
+### Настройка Prometheus
+
+Добавить в `/etc/prometheus/prometheus.yml`:
+
+```yaml
+  - job_name: 'node_custom'
+    static_configs:
+      - targets: ['localhost:9101']
+    scrape_interval: 15s
+```
+
+### Готовые запросы для Grafana
+
+- **CPU:** `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`
+- **RAM:** `(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100`
+- **Диск:** `(node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100`
+- **Сеть (входящий):** `rate(node_network_receive_bytes_total{device="ens3"}[1m])`
+- **Сеть (исходящий):** `rate(node_network_transmit_bytes_total{device="ens3"}[1m])`
+
+
 ## Подключение к Grafana
 
 1. Открыть Grafana: `http://твой-ip:3000`
