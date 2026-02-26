@@ -21,6 +21,7 @@
 - Telegram-боты: уведомления о подключениях + управление пользователями
 - Геолокация по IP (город, страна, провайдер)
 - Мониторинг посещений через Grafana + Loki
+- Мониторинг ресурсов сервера (CPU, RAM, диск, сеть) через Prometheus + Node Exporter
 
 ---
 
@@ -80,7 +81,16 @@ cd pet_vless_telegram
 - Уведомления о новых подключениях → [`docs/telegram-bot.md`](docs/telegram-bot.md#бот-уведомлений)
 - Управление пользователями → [`docs/telegram-bot.md`](docs/telegram-bot.md#бот-управления)
 
-### 3. Мониторинг (Grafana + Loki)
+### 3. Мониторинг (Grafana + Loki + Prometheus)
+## Для логов пользователей
+- **Loki + Promtail** — сбор и визуализация логов (кто и куда ходит)
+
+## Для системных метрик
+- **Prometheus + Node Exporter** — мониторинг CPU, RAM, диска, сети сервера
+
+Полные инструкции по установке:
+- [Loki + Promtail](docs/monitoring.md)
+- [Prometheus + Node Exporter](docs/monitoring.md#prometheus--node-exporter)
 Полная инструкция по установке → **[`docs/monitoring.md`](docs/monitoring.md)**
 
 ---
