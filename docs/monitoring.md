@@ -81,11 +81,13 @@ sudo systemctl enable --now node_exporter
 
 ### Готовые запросы для Grafana
 
-- **CPU:** `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)`
-- **RAM:** `(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100`
-- **Диск:** `(node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100`
-- **Сеть (входящий):** `rate(node_network_receive_bytes_total{device="ens3"}[1m])`
-- **Сеть (исходящий):** `rate(node_network_transmit_bytes_total{device="ens3"}[1m])`
+| Метрика | Запрос (PromQL) |
+|---------|-----------------|
+| **CPU** | `100 - (avg by (instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)` |
+| **RAM** | `(node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100` |
+| **Диск** | `(node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100` |
+| **Сеть (входящий)** | `rate(node_network_receive_bytes_total{device="ens3"}[1m])` |
+| **Сеть (исходящий)** | `rate(node_network_transmit_bytes_total{device="ens3"}[1m])` |
 
 
 ## Подключение к Grafana
