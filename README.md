@@ -122,10 +122,10 @@ pet_vless_telegram/
 
 | Раздел | Ссылка |
 |--------|--------|
-| 📊 Мониторинг (Loki + Grafana) | [`docs/monitoring.md`](docs/monitoring.md) |
-| 🤖 Telegram-боты | [`docs/telegram-bot.md`](docs/telegram-bot.md) |
-| 🔧 Настройка Xray | [`docs/xray-config.md`](docs/xray-config.md) |
-| 📋 Шпаргалка по командам | [`docs/commands.md`](docs/commands.md) |
+| Мониторинг (Loki + Grafana) | [`docs/monitoring.md`](docs/monitoring.md) |
+| Telegram-боты | [`docs/telegram-bot.md`](docs/telegram-bot.md) |
+| Настройка Xray | [`docs/xray-config.md`](docs/xray-config.md) |
+| Шпаргалка по командам | [`docs/commands.md`](docs/commands.md) |
 
 ---
 
@@ -138,7 +138,6 @@ pet_vless_telegram/
 - [@mintel](https://github.com/mintel) за [promtail-static](https://github.com/mintel/promtail-static) — статические сборки Promtail
 - [@grafana](https://github.com/grafana) за [Loki](https://github.com/grafana/loki) и [Grafana](https://github.com/grafana/grafana) — визуализация всего и вся
 - [@XTLS](https://github.com/XTLS) за [Xray-core](https://github.com/XTLS/Xray-core) — сердце проекта
-- **Всем, кто держит свободный интернет**
 
 ---
 
