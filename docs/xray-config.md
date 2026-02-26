@@ -1,56 +1,134 @@
-#  Настройка Xray
+# Xray Configuration
 
-## Конфигурация сервера
+Настройка Xray (VLESS + Reality) для проекта.
 
-Основной конфиг Xray находится в `/usr/local/etc/xray/config.json`.  
-Пример конфига с комментариями: [`config/example.config.json`](../config/example.config.json)
+**Основной конфиг:**
 
-### Базовые параметры
+```bash
+/usr/local/etc/xray/config.json
+```
 
-| Поле | Описание |
-|------|----------|
+**Пример с комментариями:** [`config/example.config.json`](../config/example.config.json)
+
+---
+
+## Server Configuration
+
+### Минимальные параметры inbound
+
+| Field | Description |
+|-------|-------------|
 | `port` | Порт входящего подключения |
-| `protocol` | Всегда `vless` для этого проекта |
-| `id` | UUID пользователя (генерируется командой `xray uuid`) |
-| `email` | Идентификатор пользователя в логах |
-| `flow` | Для Reality обязательно `xtls-rprx-vision` |
+| `protocol` | `vless` |
+| `id` | UUID пользователя |
+| `email` | Идентификатор пользователя (для логов и Loki) |
+| `flow` | Для Reality: `xtls-rprx-vision` |
 
-### Генерация ключей
+---
+
+## Adding a New User
+
+### Сгенерировать UUID
 
 ```bash
-# UUID для нового пользователя
 xray uuid
-
-# Ключи Reality (private + public)
-xray x25519
-
-# ShortID (hex)
-openssl rand -hex 8
 ```
 
-### Проверка конфига
+### Добавить в секцию `clients`
 
-```bash
-sudo xray run -test -config /usr/local/etc/xray/config.json
-```
-
-### Перезапуск Xray
-
-```bash
-sudo systemctl restart xray
-sudo systemctl status xray
+```json
+"clients": [
+  {
+    "id": "UUID",
+    "flow": "xtls-rprx-vision",
+    "email": "user@server.com"
+  }
+]
 ```
 
 ---
 
-## Логи
+## Reality Keys
 
-Для работы мониторинга в конфиге должна быть секция:
+### Генерация ключей
+
+```bash
+# Private + Public key
+xray x25519
+
+# ShortID
+openssl rand -hex 8
+```
+
+### Использовать:
+
+- `privateKey` — в `realitySettings`
+- `publicKey` — в клиентском конфиге
+- `shortId` — в обоих
+
+---
+
+## Validate Configuration
+
+Перед перезапуском:
+
+```bash
+xray run -test -config /usr/local/etc/xray/config.json
+```
+
+Если ошибок нет — можно перезапускать.
+
+---
+
+## Restart Service
+
+```bash
+systemctl restart xray
+systemctl status xray
+```
+
+---
+
+## Logging (Required for Monitoring)
+
+Для работы Grafana + Loki должна быть включена секция логов:
 
 ```json
 "log": {
-    "loglevel": "info",
-    "access": "/var/log/xray/access.log",
-    "dnsLog": false
+  "loglevel": "info",
+  "access": "/var/log/xray/access.log",
+  "dnsLog": false
 }
 ```
+
+После изменения:
+
+```bash
+systemctl restart xray
+```
+
+---
+
+## Quick Troubleshooting
+
+### Проверить логи в реальном времени
+
+```bash
+journalctl -u xray -f
+```
+
+### Проверить access.log
+
+```bash
+tail -f /var/log/xray/access.log
+```
+
+---
+
+## Recommended Workflow
+
+1. Сгенерировать UUID
+2. Добавить пользователя в `config.json`
+3. Проверить конфиг (`-test`)
+4. Перезапустить Xray
+5. Проверить лог
