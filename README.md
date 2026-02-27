@@ -1,3 +1,14 @@
+# ⚠️ Legacy Version
+
+Этот репозиторий больше не развивается.
+Новая версия платформы: https://github.com/kolpakovden/mifa-vpn-platform
+
+---
+---
+---
+
+
+
 # 🛡️ VLESS + Telegram Monitoring + Grafana
 ![Version](https://img.shields.io/badge/version-3.0-blue)
 ![Xray](https://img.shields.io/badge/Xray-25.8.3-green)
